@@ -1,0 +1,28 @@
+service: backend
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: eu-west-1
+  stage: dev
+  environment:
+    COGNITO_USER_POOL_ID: YOUR_COGNITO_USER_POOL_ID
+
+functions:
+  signup:
+    handler: handler.signup
+    events:
+      - http:
+          path: signup
+          method: post
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+
+plugins:
+  - serverless-python-requirements
+
+package:
+  exclude:
+    - node_modules/**
+    - __pycache__/**
