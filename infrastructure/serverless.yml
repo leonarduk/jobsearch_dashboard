@@ -1,0 +1,107 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: jobsearch-dashboard
+
+provider:
+  name: aws
+  runtime: python3.9
+  stage: dev
+  region: us-east-1   # Change this to your desired AWS region
+
+resources:
+  Resources:
+    UserTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: User
+        AttributeDefinitions:
+          - AttributeName: UserId
+            AttributeType: S
+          # Add other attribute definitions as needed
+        KeySchema:
+          - AttributeName: UserId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    JobApplicationTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: JobApplication
+        AttributeDefinitions:
+          - AttributeName: ApplicationId
+            AttributeType: S
+          - AttributeName: UserId
+            AttributeType: S   # Foreign key to User table
+          # Add other attribute definitions as needed
+        KeySchema:
+          - AttributeName: ApplicationId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    RecruiterTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Recruiter
+        AttributeDefinitions:
+          - AttributeName: RecruiterId
+            AttributeType: S
+          # Add other attribute definitions as needed
+        KeySchema:
+          - AttributeName: RecruiterId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    NotesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Notes
+        AttributeDefinitions:
+          - AttributeName: NoteId
+            AttributeType: S
+          - AttributeName: UserId
+            AttributeType: S   # Foreign key to User table
+          - AttributeName: ApplicationId
+            AttributeType: S   # Foreign key to JobApplication table
+          # Add other attribute definitions as needed
+        KeySchema:
+          - AttributeName: NoteId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    RemindersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Reminders
+        AttributeDefinitions:
+          - AttributeName: ReminderId
+            AttributeType: S
+          - AttributeName: UserId
+            AttributeType: S   # Foreign key to User table
+          - AttributeName: ApplicationId
+            AttributeType: S   # Foreign key to JobApplication table
+          # Add other attribute definitions as needed
+        KeySchema:
+          - AttributeName: ReminderId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
