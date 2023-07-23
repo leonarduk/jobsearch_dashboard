@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  UserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: JD_User
+      AttributeDefinitions:
+        - AttributeName: UserId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: UserId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  JobApplicationTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: JD_JobApplication
+      AttributeDefinitions:
+        - AttributeName: ApplicationId
+          AttributeType: S
+        - AttributeName: UserId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: ApplicationId
+          KeyType: HASH
+        - AttributeName: UserId
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  RecruiterTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: JD_Recruiter
+      AttributeDefinitions:
+        - AttributeName: RecruiterId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: RecruiterId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  NotesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: JD_Notes
+      AttributeDefinitions:
+        - AttributeName: NoteId
+          AttributeType: S
+        - AttributeName: UserId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: NoteId
+          KeyType: HASH
+        - AttributeName: UserId
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  RemindersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: JD_Reminders
+      AttributeDefinitions:
+        - AttributeName: ReminderId
+          AttributeType: S
+        - AttributeName: UserId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: ReminderId
+          KeyType: HASH
+        - AttributeName: UserId
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
