@@ -1,5 +1,9 @@
 Running Locally
 
+# run local database
+
+java -Djava.library.path=C:\Users\steph\Workspaces\local_aws\dynamodb_1\DynamoDBLocal_lib -jar C:\Users\steph\Workspaces\local_aws\dynamodb_1\DynamoDBLocal.jar -sharedDb -dbPath C:\Users\steph\Workspaces\local_aws\dynamodb_1\DynamoDBLocal_data
+
 # run front end locally on http://localhost:3000
 
 cd jobsearch_dashboard\frontend
@@ -8,7 +12,7 @@ npm start
 # run lambda locally on http://localhost:4000
 
 cd jobsearch_dashboard\jd_backend
-serverless offline start
+serverless offline start --verbose
 
 Deploying to AWS
 

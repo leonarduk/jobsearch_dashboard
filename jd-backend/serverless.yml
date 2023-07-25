@@ -11,6 +11,7 @@ provider:
 functions:
   signup:
     handler: user_signup.signup
+    timeout: 10 # Increase the timeout value in seconds as needed
     events:
       - http:
           path: signup
@@ -19,9 +20,36 @@ functions:
 plugins:
   - serverless-python-requirements
   - serverless-offline
+  - serverless-dynamodb-local
 
 custom:
   pythonRequirements:
     slim: true
   serverless-offline:
     httpPort: 4000
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: false
+      dbPath: null
+      sharedDb: true
+      delayTransientStatuses: false
+      cors: null
+
+resources:
+  Resources:
+
+    UserTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: JD_User
+        AttributeDefinitions:
+          - AttributeName: UserId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: UserId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+

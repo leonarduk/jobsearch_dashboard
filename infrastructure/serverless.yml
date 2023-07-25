@@ -6,6 +6,10 @@ provider:
   stage: dev
   region: eu-west-1
 
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+
 resources:
   # Include the nested CloudFormation stack
   - ${file(./dynamodb-tables.yml)}

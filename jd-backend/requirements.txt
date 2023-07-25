@@ -1,2 +1,3 @@
 bcrypt
 boto3
+chardet
