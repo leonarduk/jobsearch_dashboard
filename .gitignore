@@ -21,3 +21,4 @@ var/
 
 # Serverless directories
 .serverless
+/jd-backend/__pycache__/*.pyc

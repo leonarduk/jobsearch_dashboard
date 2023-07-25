@@ -9,3 +9,4 @@ provider:
 resources:
   # Include the nested CloudFormation stack
   - ${file(./dynamodb-tables.yml)}
+  - ${file(./cognito-user-pool.yml)}

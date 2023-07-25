@@ -7,9 +7,10 @@ function App() {
   const [password, setPassword] = useState('');
 
   const handleSignUp = async () => {
+      //'https://1bfjki6cdh.execute-api.eu-west-1.amazonaws.com/dev/signup',
     try {
       const response = await axios.post(
-        'YOUR_BACKEND_API_URL/signup',
+        'http://localhost:4000/dev/signup',
         {
           name: name,
           email: email,
@@ -19,7 +20,8 @@ function App() {
       console.log(response.data.message);
       // Display welcome message here or redirect to another page after successful sign-up.
     } catch (error) {
-      console.error(error.response.data.message);
+     console.error(error.message);
+//      console.error(error.response.data.message);
       // Handle error and display error message.
     }
   };

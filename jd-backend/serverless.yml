@@ -1,4 +1,4 @@
-service: backend
+service: jd-backend
 
 provider:
   name: aws
@@ -6,23 +6,22 @@ provider:
   region: eu-west-1
   stage: dev
   environment:
-    COGNITO_USER_POOL_ID: YOUR_COGNITO_USER_POOL_ID
+    COGNITO_USER_POOL_ID: eu-west-1_J3SXFvZbW
 
 functions:
   signup:
-    handler: handler.signup
+    handler: user_signup.signup
     events:
       - http:
           path: signup
           method: post
-
-custom:
-  stage: ${opt:stage, self:provider.stage}
-
+          cors: true
 plugins:
   - serverless-python-requirements
+  - serverless-offline
 
-package:
-  exclude:
-    - node_modules/**
-    - __pycache__/**
+custom:
+  pythonRequirements:
+    slim: true
+  serverless-offline:
+    httpPort: 4000
