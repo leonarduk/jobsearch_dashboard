@@ -17,7 +17,7 @@ functions:
           path: login
           method: post
           cors: true
-
+    role: LoginLambdaRole
   signup:
     handler: user_signup.signup
     timeout: 10 # Increase the timeout value in seconds as needed
@@ -26,12 +26,24 @@ functions:
           path: signup
           method: post
           cors: true
+    role: SignupLambdaRole
+
 plugins:
+  # for front end
+  - serverless-finch
+
+  # for lambda
   - serverless-python-requirements
+
+  # for testing locally
   - serverless-offline
   - serverless-dynamodb-local
 
 custom:
+  frontendBucketName: jobsearchdashboard.com
+  client:
+    bucketName: ${self:custom.frontendBucketName}
+    distributionFolder: ../frontend/build
   pythonRequirements:
     slim: true
   serverless-offline:
@@ -45,8 +57,25 @@ custom:
       delayTransientStatuses: false
       cors: null
 
+
+
 resources:
   Resources:
+    FrontendBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.frontendBucketName}
+    FrontendBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: ${self:custom.frontendBucketName}
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Action: s3:GetObject
+              Resource: "arn:aws:s3:::${self:custom.frontendBucketName}/*"
+              Principal: "*"
+
     UserTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -128,3 +157,49 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
+    LoginLambdaRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: LoginLambdaRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        Policies:
+          - PolicyName: LoginLambdaPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - s3:PutBucketPolicy
+                  Resource: "arn:aws:s3:::jobsearchdashboard.com" # Replace with your S3 bucket ARN
+
+    SignupLambdaRole:
+
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: SignupLambdaRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        Policies:
+          - PolicyName: SignupLambdaPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - s3:PutBucketPolicy
+                  Resource: "arn:aws:s3:::jobsearchdashboard.com" # Replace with your S3 bucket ARN

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import config from './config';
+import './App.css';
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(true); // Set initial mode to Login
@@ -45,48 +46,71 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div className="app-container">
       <h1>JobSearch Dashboard</h1>
 
       {/* Sign Up or Login Form based on mode */}
       {isLogin ? (
-        <div>
+        <div className="form-container">
           <h2>Login</h2>
           <form onSubmit={handleLogin}>
             <div>
               <label>Username:</label>
-              <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="input-field"
+              />
             </div>
             <div>
               <label>Password:</label>
-              <input type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} />
+              <input
+                type="password"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                className="input-field"
+              />
             </div>
             <button type="submit">Login</button>
           </form>
           <p>
-            Don't have an account?{' '}
-            <button onClick={toggleMode}>Register</button>
+            Don't have an account? <button onClick={toggleMode}>Register</button>
           </p>
         </div>
       ) : (
-        <div>
+        <div className="form-container">
           <h2>Sign Up</h2>
           <div>
             <label>Name:</label>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="input-field"
+            />
           </div>
           <div>
             <label>Email:</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input-field"
+            />
           </div>
           <div>
             <label>Password:</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-field"
+            />
           </div>
           <button onClick={handleSignUp}>Sign Up</button>
           <p>
-            Already have an account?{' '}
-            <button onClick={toggleMode}>Login</button>
+            Already have an account? <button onClick={toggleMode}>Login</button>
           </p>
         </div>
       )}
