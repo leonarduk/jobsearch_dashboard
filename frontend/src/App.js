@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import config from './config';
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(true); // Set initial mode to Login
@@ -11,7 +12,7 @@ const App = () => {
 
   const handleSignUp = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/dev/signup', {
+      const response = await axios.post(`${config.apiUrl}/signup`, {
         name,
         email,
         password,
@@ -27,7 +28,7 @@ const App = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/dev/login', {
+      const response = await axios.post(`${config.apiUrl}/login`, {
         username,
         password: loginPassword,
       });
