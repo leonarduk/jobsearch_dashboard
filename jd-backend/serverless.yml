@@ -9,6 +9,15 @@ provider:
     COGNITO_USER_POOL_ID: eu-west-1_J3SXFvZbW
 
 functions:
+  login:
+    handler: user_login.login
+    timeout: 10
+    events:
+      - http:
+          path: login
+          method: post
+          cors: true
+
   signup:
     handler: user_signup.signup
     timeout: 10 # Increase the timeout value in seconds as needed

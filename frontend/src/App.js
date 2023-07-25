@@ -1,5 +1,7 @@
+// App.js
 import React, { useState } from 'react';
 import axios from 'axios';
+import Login from './Login'; // Import the Login component
 
 function App() {
   const [name, setName] = useState('');
@@ -7,7 +9,7 @@ function App() {
   const [password, setPassword] = useState('');
 
   const handleSignUp = async () => {
-      //'https://1bfjki6cdh.execute-api.eu-west-1.amazonaws.com/dev/signup',
+    // Your existing handleSignUp function for sign up
     try {
       const response = await axios.post(
         'http://localhost:4000/dev/signup',
@@ -20,8 +22,7 @@ function App() {
       console.log(response.data.message);
       // Display welcome message here or redirect to another page after successful sign-up.
     } catch (error) {
-     console.error(error.message);
-//      console.error(error.response.data.message);
+      console.error(error.message);
       // Handle error and display error message.
     }
   };
@@ -42,6 +43,9 @@ function App() {
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
       </div>
       <button onClick={handleSignUp}>Sign Up</button>
+
+      {/* Render the Login component */}
+      <Login />
     </div>
   );
 }
