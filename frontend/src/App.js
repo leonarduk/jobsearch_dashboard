@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import config from './config';
-import './App.css';
+const axios = require('axios');
+const config = require('./config');
+require('./App.css');
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(true); // Set initial mode to Login
