@@ -15,7 +15,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cover": "jest --coverage",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration"
   },
   "eslintConfig": {
     "extends": [
@@ -49,11 +54,5 @@
     "jest-css-modules-transform": "^4.4.2",
     "jsdom": "^22.1.0",
     "msw": "^1.2.3"
-  },
-  "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cover": "jest --coverage",
-    "test:unit": "jest tests/unit",
-    "test:integration": "jest tests/integration"
-  }}
+  }
+}

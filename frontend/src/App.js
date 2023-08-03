@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-const axios = require('axios');
-const config = require('./config');
-require('./App.css');
+import axios from 'axios'; // Import axios for making API calls
+import config from './config'; // Import config for API base URL
+import './App.css';
 
 const App = () => {
-  const [isLogin, setIsLogin] = useState(true); // Set initial mode to Login
+  const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,13 +13,14 @@ const App = () => {
 
   const handleSignUp = async () => {
     try {
-      const response = await axios.post(`${config.apiUrl}/signup`, {
-        name,
-        email,
-        password,
+      const response = await axios.post(`${config.apiUrl}/jobApplications`, {
+        // Send the data to the 'jobApplications' endpoint for creating a job application
+        company: name,
+        position: email,
+        dateApplied: password,
       });
-      console.log(response.data.message);
-      // Display welcome message here or redirect to another page after successful sign-up.
+      console.log(response.data);
+      // Handle successful sign-up here or redirect to another page after successful sign-up.
     } catch (error) {
       console.error(error.message);
       // Handle error and display error message.
@@ -29,12 +30,10 @@ const App = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${config.apiUrl}/login`, {
-        username,
-        password: loginPassword,
-      });
+      const response = await axios.get(`${config.apiUrl}/jobApplications/${username}`);
+      // Send a GET request to the 'jobApplications' endpoint with the specified ID (username)
+      console.log(response.data); // The response should contain the job application data.
       // Handle successful login, e.g., store session token in cookies and redirect to dashboard.
-      console.log(response.data); // The response should contain the session token or user info.
     } catch (error) {
       // Handle login failure, e.g., show error message.
       console.error(error.message);
@@ -42,14 +41,13 @@ const App = () => {
   };
 
   const toggleMode = () => {
-    setIsLogin((prev) => !prev); // Toggle between Login and Sign Up mode
+    setIsLogin((prev) => !prev);
   };
 
   return (
     <div className="app-container">
       <h1>JobSearch Dashboard</h1>
 
-      {/* Sign Up or Login Form based on mode */}
       {isLogin ? (
         <div className="form-container">
           <h2>Login</h2>
