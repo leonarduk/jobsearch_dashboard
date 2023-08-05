@@ -1,0 +1,49 @@
+createJobApplication:
+  handler: job_application.create_job_application
+  timeout: 10
+  role: CreateJobApplicationRole
+  events:
+    - http:
+        path: jobApplications
+        method: post
+        cors: true
+
+readJobApplication:
+  handler: job_application.read_job_application
+  timeout: 10
+  role: ReadJobApplicationRole
+  events:
+    - http:
+        path: jobApplications/{id}
+        method: get
+        cors: true
+
+updateJobApplication:
+  handler: job_application.update_job_application
+  timeout: 10
+  role: UpdateJobApplicationRole
+  events:
+    - http:
+        path: jobApplications/{id}
+        method: put
+        cors: true
+
+deleteJobApplication:
+  handler: job_application.delete_job_application
+  timeout: 10
+  role: DeleteJobApplicationRole
+  events:
+    - http:
+        path: jobApplications/{id}
+        method: delete
+        cors: true
+
+listJobApplications:
+  handler: job_application.list_job_applications
+  timeout: 10
+  role: ListJobApplicationsRole
+  events:
+    - http:
+        path: jobApplications
+        method: get
+        cors: true
