@@ -1,33 +1,19 @@
-import base64
 import json
-#import bcrypt
-import chardet
 
 import boto3
 
-dynamodb = boto3.resource('dynamodb', region_name='localhost', endpoint_url='http://localhost:8000')
+from aws_utils import get_data_from_body, get_dynamodb_resource
 
-user_table = dynamodb.Table('JD_User')
 
+dynamodb_resource = get_dynamodb_resource()
+
+table_name='JD_User'
 
 def signup(event, context):
     try:
         # print("event: " + str(event))
 
-        # Decode the base64-encoded request body
-        body = event['body']
-        print("body: " + str(body))
-
-        isb64Encoded = event['isBase64Encoded']
-        if isb64Encoded:
-            decoded_data = base64.b64decode(body)
-            # Use chardet to detect the character encoding
-            result = chardet.detect(decoded_data)
-            encoding = result['encoding']
-            request_body = decoded_data.decode(encoding)
-        else:
-            request_body = body
-        data = json.loads(request_body)
+        data = get_data_from_body(event)
 
         print("Data" + str(data))
 
@@ -48,9 +34,19 @@ def signup(event, context):
                 "body": json.dumps({"message": "Name, email, and password are required."})
             }
             return response
+        dynamodb = boto3.client('dynamodb', endpoint_url='http://localhost:8000')
+        dynamodb.get_waiter('table_exists').wait(TableName=table_name)
+        print(f"Table '{table_name}' created successfully.")
 
         # Check if user already exists
-        response = user_table.get_item(Key={'userId': email})
+        user_table = dynamodb_resource.Table('JD_User')
+        print(f"table {user_table}")
+        # Perform the get_item operation using the client
+        response = dynamodb.get_item(
+            TableName=table_name,
+            Key={'UserId': {'S': email}}
+        )
+
         if 'Item' in response:
             response = {
                 "statusCode": 409,
@@ -64,12 +60,19 @@ def signup(event, context):
             }
             return response
 
-    # Hash the password
-#    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        # Hash the password
+        #    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-        # Save user record in the database
-        user_table.put_item(Item={'userId': email, 'email': email, 'name': name, 'password': password})
-
+        # Perform the put_item operation using the client
+        response = dynamodb.put_item(
+            TableName=table_name,
+            Item={
+                'UserId': {'S': email},
+                'Email': {'S': email},
+                'Name': {'S': name},
+                'Password': {'S': password}
+            }
+        )
         # Return response
         response = {
             "statusCode": 200,
@@ -95,6 +98,8 @@ def signup(event, context):
                 "Access-Control-Allow-Methods": "OPTIONS,POST",  # Add allowed HTTP methods here
                 "Access-Control-Allow-Credentials": True,  # Allow sending of cookies
             },
-            "body": json.dumps({"message": "An error occurred during sign up."})
+            "body": json.dumps({"message": f"An error occurred during sign up.{e}"})
         }
         return response
+
+

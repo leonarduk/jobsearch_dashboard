@@ -13,11 +13,10 @@ const App = () => {
 
   const handleSignUp = async () => {
     try {
-      const response = await axios.post(`${config.apiUrl}/jobApplications`, {
-        // Send the data to the 'jobApplications' endpoint for creating a job application
-        company: name,
-        position: email,
-        dateApplied: password,
+      const response = await axios.post(`${config.apiUrl}/signup`, {
+        name,
+        email,
+        password,
       });
       console.log(response.data);
       // Handle successful sign-up here or redirect to another page after successful sign-up.
@@ -30,10 +29,12 @@ const App = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.get(`${config.apiUrl}/jobApplications/${username}`);
-      // Send a GET request to the 'jobApplications' endpoint with the specified ID (username)
-      console.log(response.data); // The response should contain the job application data.
+      const response = await axios.post(`${config.apiUrl}/login`, {
+        username,
+        password: loginPassword,
+      });
       // Handle successful login, e.g., store session token in cookies and redirect to dashboard.
+      console.log(response.data); // The response should contain the session token or user info.
     } catch (error) {
       // Handle login failure, e.g., show error message.
       console.error(error.message);

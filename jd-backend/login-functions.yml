@@ -2,14 +2,6 @@ login:
   handler: user_login.login
   timeout: 10
   role: LoginRole
-
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - s3:*
-      Resource:
-        - arn:aws:s3:::${self:custom.frontendBucketName}
-
   events:
     - http:
         path: login
@@ -20,16 +12,8 @@ signup:
   handler: user_signup.signup
   timeout: 10
   role: SignupRole
-
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - s3:*
-  #        Resource:
-  #          - arn:aws:s3:::${self:custom.frontendBucketName}
   events:
     - http:
         path: signup
         method: post
         cors: true
-

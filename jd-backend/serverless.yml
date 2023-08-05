@@ -7,10 +7,16 @@ provider:
   stage: dev
   environment:
     COGNITO_USER_POOL_ID: eu-west-1_J3SXFvZbW
+    DYNAMO_ENDPOINT: http://localhost:8000 # Add this line to point to the local DynamoDB endpoint
 
-functions:
-  - ${file(login-functions.yml)}
-#  - ${file(application-functions.yml)}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+        - dynamodb:GetItem
+      Resource:
+        - arn:aws:s3:::${self:custom.frontendBucketName}
+        - arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/JD_User
 
 plugins:
   # for front end
@@ -24,7 +30,36 @@ plugins:
   - serverless-offline
   - serverless-dynamodb-local
 
+functions:
+  - ${file(login-functions.yml)}
+#  - ${file(application-functions.yml)}
+
 custom:
+  dynamodb:
+    # If you only want to use DynamoDB Local in some stages, declare them here
+    stages:
+      - dev
+    start:
+      docker: true
+      port: 8000
+      inMemory: true
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+    # Uncomment only if you already have a DynamoDB running locally
+      noStart: true
+
+  serverless-offline:
+    httpPort: 4000
+
+  offline:
+    customEnvironment:
+      IS_OFFLINE: true
+
+  cors:
+    origins:
+        - http://jobsearchdashboard.com.s3-website-eu-west-1.amazonaws.com/
+
   frontendBucketName: jobsearchdashboard.com
   client:
     bucketName: ${self:custom.frontendBucketName}
@@ -34,17 +69,6 @@ custom:
       localDir: ../frontend/build
   pythonRequirements:
     slim: true
-  serverless-offline:
-    httpPort: 4000
-  dynamodb:
-    start:
-      port: 8000
-      inMemory: false
-      dbPath: null
-      sharedDb: true
-      delayTransientStatuses: false
-      cors: null
-
 
 resources:
   - ${file(database-resources.yml)}
