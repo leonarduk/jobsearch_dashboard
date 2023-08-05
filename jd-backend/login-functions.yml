@@ -1,9 +1,9 @@
 login:
   handler: user_login.login
   timeout: 10
-  role: LoginRole # Role reference
+  role: LoginRole 
 
-  iamRoleStatements: # Define permissions here
+  iamRoleStatements:
     - Effect: Allow
       Action:
         - s3:*

@@ -49,3 +49,5 @@ custom:
 resources:
   - ${file(database-resources.yml)}
   - ${file(resources.yml)}
+  - ${file(login-resources.yml)}
+#  - ${file(application-resources.yml)}

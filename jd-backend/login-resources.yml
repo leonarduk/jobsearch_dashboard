@@ -1,0 +1,47 @@
+Resources:
+  LoginRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LoginRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaS3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:*
+                Resource: "arn:aws:s3:::${self:custom.frontendBucketName}/*"
+
+  SignupRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: SignupRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaS3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:*
+                Resource: "arn:aws:s3:::${self:custom.frontendBucketName}/*"
+

@@ -1,0 +1,115 @@
+Resources:
+  CreateJobApplicationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CreateJobApplicationRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaDynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                Resource: "arn:aws:dynamodb:${self:provider.region}:#{AWS::AccountId}:table/JD_JobApplication"
+
+  ReadJobApplicationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ReadJobApplicationRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaDynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                Resource: "arn:aws:dynamodb:${self:provider.region}:#{AWS::AccountId}:table/JD_JobApplication/*"
+
+  UpdateJobApplicationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: UpdateJobApplicationRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaDynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:UpdateItem
+                Resource: "arn:aws:dynamodb:${self:provider.region}:#{AWS::AccountId}:table/JD_JobApplication/*"
+
+  DeleteJobApplicationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: DeleteJobApplicationRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaDynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:DeleteItem
+                Resource: "arn:aws:dynamodb:${self:provider.region}:#{AWS::AccountId}:table/JD_JobApplication/*"
+
+  ListJobApplicationsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ListJobApplicationsRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaDynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:Scan
+                Resource: "arn:aws:dynamodb:${self:provider.region}:#{AWS::AccountId}:table/JD_JobApplication"
