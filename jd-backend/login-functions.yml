@@ -1,7 +1,7 @@
 login:
   handler: user_login.login
   timeout: 10
-  role: LoginRole 
+  role: LoginRole
 
   iamRoleStatements:
     - Effect: Allow
