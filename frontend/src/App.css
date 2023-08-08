@@ -49,3 +49,8 @@ button.toggle-button {
 button.toggle-button:hover {
   background-color: #218838; /* Darker green on hover */
 }
+
+.success-message {
+  color: green;
+  font-weight: bold;
+}

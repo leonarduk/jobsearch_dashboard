@@ -135,7 +135,25 @@ if __name__ == '__main__':
         "WriteCapacityUnits": 5
     }
 
-    tables = [UserTable, JobApplicationTable, RecruiterTable, NotesTable, RemindersTable]
+    SessionsTable = {
+        "TableName": "JD_Sessions",
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "session_id",
+                "AttributeType": "S"
+            }
+        ],
+        "KeySchema": [
+            {
+                "AttributeName": "session_id",
+                "KeyType": "HASH"
+            }
+        ],
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+    }
+
+    tables = [UserTable, JobApplicationTable, RecruiterTable, NotesTable, RemindersTable, SessionsTable]
 
     for table in tables:
         create_table(

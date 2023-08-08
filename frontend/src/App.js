@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Import axios for making API calls
-import config from './config'; // Import config for API base URL
+import axios from 'axios';
+import config from './config';
 import './App.css';
 
 const App = () => {
@@ -10,6 +10,7 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [successMessage, setSuccessMessage] = useState(''); // Add successMessage state
 
   const handleSignUp = async () => {
     try {
@@ -19,6 +20,10 @@ const App = () => {
         password,
       });
       console.log(response.data);
+
+      // Update the success message state with the response message
+      setSuccessMessage(response.data.message);
+
       // Handle successful sign-up here or redirect to another page after successful sign-up.
     } catch (error) {
       console.error(error.message);
@@ -33,11 +38,17 @@ const App = () => {
         username,
         password: loginPassword,
       });
-      // Handle successful login, e.g., store session token in cookies and redirect to dashboard.
-      console.log(response.data); // The response should contain the session token or user info.
+      console.log(response.data);
+
+      // Update the success message state with the login success message
+      setSuccessMessage('Login successful');
+
+      // Handle successful login here or redirect to dashboard.
     } catch (error) {
-      // Handle login failure, e.g., show error message.
       console.error(error.message);
+
+      // Update the success message state with the login error message
+      setSuccessMessage('Login failed. Please check your username and password.');
     }
   };
 
@@ -113,6 +124,9 @@ const App = () => {
           </p>
         </div>
       )}
+
+      {/* Display success message */}
+      {successMessage && <p className="success-message">{successMessage}</p>}
     </div>
   );
 };
