@@ -21,13 +21,16 @@ def get_dynamo_client():
     return dynamodb
 
 
-def add_item_to_table(table, item):
+def add_item_to_table(dynamodb_client, table, item):
     try:
-        response = table.put_item(Item=item)
+        response = dynamodb_client.put_item(
+            TableName=table,
+            Item=item)
         print("Item added successfully:", response)
     except ClientError as e:
         if e.response['Error']['Code'] == 'ProvisionedThroughputExceededException':
             print("Error: Provisioned throughput exceeded.")
+            # todo handle failures better
         elif e.response['Error']['Code'] == 'ConditionalCheckFailedException':
             print("Error: Conditional check failed.")
         elif e.response['Error']['Code'] == 'InternalServerError':

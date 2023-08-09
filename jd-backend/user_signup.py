@@ -35,7 +35,7 @@ def signup(event, context):
         #    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
         # Perform the put_item operation using the client
-        add_item_to_table(table=dynamodb.Table(table_name), item={
+        add_item_to_table(dynamodb_client=dynamodb, table=table_name, item={
             'UserId': {'S': email},
             'Email': {'S': email},
             'Name': {'S': name},

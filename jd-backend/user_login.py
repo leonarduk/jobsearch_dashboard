@@ -1,6 +1,7 @@
 import json
 import bcrypt
 import secrets
+from datetime import datetime, timedelta
 
 from aws_utils import get_data_from_body, get_dynamo_client, create_response, add_item_to_table
 
@@ -16,7 +17,7 @@ def login(event, context):
 
     if not username or not password:
         return create_response("Username and password are required.", 400)
-
+    #
     user_table = "JD_User"
     dynamodb_client = get_dynamo_client()
     dynamodb_client.get_waiter('table_exists').wait(TableName=user_table)
@@ -48,10 +49,11 @@ def login(event, context):
     dynamodb_client = get_dynamo_client()
     dynamodb_client.get_waiter('table_exists').wait(TableName=session_table)
 
-    print(dynamodb_client)
-    table = dynamodb_client.Table(session_table)
-    add_item_to_table(table=table,
-                      Item={'session_id': session_id, 'user_id': db_user['user_id'], 'expiration': get_expiration_time()})
+    add_item_to_table(dynamodb_client=dynamodb_client, table=session_table,
+                      item={
+                          'session_id': {'S': session_id},
+                          'user_id': {'S': username},
+                          'expiration': {'S': get_expiration_time()}})
 
     # Return the session ID to the client
     print(f"Logged in")
@@ -67,6 +69,16 @@ def generate_session_id():
     return secrets.token_hex(16)  # Generate a random 32-character hexadecimal string
 
 
+
+
 def get_expiration_time():
-    # Implement your logic to calculate the expiration time for the session (e.g., 15 minutes from now).
-    pass
+    # Calculate the current time
+    current_time = datetime.utcnow()
+
+    # Calculate the expiration time (15 minutes from now)
+    expiration_time = current_time + timedelta(minutes=15)
+
+    # Format the expiration time as a string
+    expiration_time_str = expiration_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+    return expiration_time_str
