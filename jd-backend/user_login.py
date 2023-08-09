@@ -59,8 +59,12 @@ def login(event, context):
     print(f"Logged in")
     return {
         "statusCode": 200,
-        "body": json.dumps({"session_id": session_id})
+        "body": json.dumps({
+            "session_id": session_id,
+            "user_name": username  # Replace this with the actual variable containing the user's name
+        })
     }
+
 
 
 def generate_session_id():
