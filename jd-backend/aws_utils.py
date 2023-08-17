@@ -68,9 +68,10 @@ def get_data_from_body(event):
                 result = chardet.detect(decoded_data)
                 encoding = result['encoding']
                 request_body = decoded_data.decode(encoding)
-                data = json.loads(request_body)
         else:
-            data = body
+            request_body = body
+
+        data = json.loads(request_body)
 
     else:
         data = event
