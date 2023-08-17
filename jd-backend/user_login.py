@@ -17,7 +17,7 @@ def login(event, context):
 
     if not username or not password:
         return create_response("Username and password are required.", 400)
-    #
+
     user_table = "JD_User"
     dynamodb_client = get_dynamo_client()
     dynamodb_client.get_waiter('table_exists').wait(TableName=user_table)

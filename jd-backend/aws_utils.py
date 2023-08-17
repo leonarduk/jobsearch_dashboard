@@ -70,6 +70,8 @@ def get_data_from_body(event):
                 request_body = decoded_data.decode(encoding)
         else:
             request_body = body
+            if isinstance(request_body, dict):
+                return request_body
 
         data = json.loads(request_body)
 
