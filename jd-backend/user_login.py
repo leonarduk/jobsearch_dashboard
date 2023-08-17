@@ -66,13 +66,10 @@ def login(event, context):
     }
 
 
-
 def generate_session_id():
     # Generate a secure random session ID using the secrets module
     # In a production setting, consider using UUID or other secure session ID generators.
     return secrets.token_hex(16)  # Generate a random 32-character hexadecimal string
-
-
 
 
 def get_expiration_time():

@@ -62,17 +62,15 @@ def get_data_from_body(event):
         body = event['body']
         print("body: " + str(body))
 
-        if "isBase64Encoded" in event:
-            isb64Encoded = event['isBase64Encoded']
-            if isb64Encoded:
+        if "isBase64Encoded" in event and event['isBase64Encoded']:
                 decoded_data = base64.b64decode(body)
                 # Use chardet to detect the character encoding
                 result = chardet.detect(decoded_data)
                 encoding = result['encoding']
                 request_body = decoded_data.decode(encoding)
-            else:
-                request_body = body
-            data = json.loads(request_body)
+                data = json.loads(request_body)
+        else:
+            data = body
 
     else:
         data = event
