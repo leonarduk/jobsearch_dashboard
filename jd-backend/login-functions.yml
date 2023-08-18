@@ -1,5 +1,5 @@
 login:
-  handler: user_login.login
+  handler: python.user_login.login
   timeout: 10
   role: LoginRole
   events:
@@ -9,7 +9,7 @@ login:
         cors: true
 
 signup:
-  handler: user_signup.signup
+  handler: python.user_signup.signup
   timeout: 10
   role: SignupRole
   events:

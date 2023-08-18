@@ -2,10 +2,10 @@ import unittest
 from unittest.mock import patch, Mock
 
 # Import the functions to be tested
-from aws_utils import (
+from python.aws_utils import (
     create_response,
 )
-from user_signup import signup
+from python.user_signup import signup
 
 
 class TestUserSignup(unittest.TestCase):

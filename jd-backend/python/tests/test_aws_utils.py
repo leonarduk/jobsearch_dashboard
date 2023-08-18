@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import patch, Mock
 import json
 
-from aws_utils import (
+from python.aws_utils import (
     get_dynamo_client,
     add_item_to_table,
     get_dynamodb_resource,

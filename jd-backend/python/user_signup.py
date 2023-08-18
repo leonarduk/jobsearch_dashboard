@@ -1,5 +1,5 @@
 import logging
-from aws_utils import get_data_from_body, get_dynamo_client, create_response, log_and_raise_error, add_item_to_table
+from python.aws_utils import get_data_from_body, get_dynamo_client, create_response, log_and_raise_error, add_item_to_table
 
 # Initialize the logger
 logger = logging.getLogger(__name__)

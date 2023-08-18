@@ -1,5 +1,5 @@
 createJobApplication:
-  handler: job_application.create_job_application
+  handler: python.job_application.create_job_application
   timeout: 10
   role: CreateJobApplicationRole
   events:
@@ -9,7 +9,7 @@ createJobApplication:
         cors: true
 
 readJobApplication:
-  handler: job_application.read_job_application
+  handler: python.job_application.read_job_application
   timeout: 10
   role: ReadJobApplicationRole
   events:
@@ -19,7 +19,7 @@ readJobApplication:
         cors: true
 
 updateJobApplication:
-  handler: job_application.update_job_application
+  handler: python.job_application.update_job_application
   timeout: 10
   role: UpdateJobApplicationRole
   events:
@@ -29,7 +29,7 @@ updateJobApplication:
         cors: true
 
 deleteJobApplication:
-  handler: job_application.delete_job_application
+  handler: python.job_application.delete_job_application
   timeout: 10
   role: DeleteJobApplicationRole
   events:
@@ -39,7 +39,7 @@ deleteJobApplication:
         cors: true
 
 listJobApplications:
-  handler: job_application.list_job_applications
+  handler: python.job_application.list_job_applications
   timeout: 10
   role: ListJobApplicationsRole
   events:

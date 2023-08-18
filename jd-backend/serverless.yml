@@ -28,7 +28,9 @@ plugins:
 
   # for testing locally
   - serverless-offline
-  - serverless-dynamodb-local
+
+# this is not working
+#  - serverless-dynamodb-local
 
 functions:
   - ${file(login-functions.yml)}
@@ -51,6 +53,8 @@ custom:
 
   serverless-offline:
     httpPort: 4000
+    customEnvironment:
+      IS_OFFLINE: true
 
   offline:
     customEnvironment:

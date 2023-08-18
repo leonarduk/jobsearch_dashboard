@@ -37,8 +37,13 @@ def log_and_raise_error(message, error_code=None):
 def get_dynamo_client():
     try:
         is_offline = os.environ.get('IS_OFFLINE')
+        is_offline = True
         if is_offline:
-            dynamodb = boto3.client('dynamodb', endpoint_url='http://localhost:8000')
+            dynamodb = boto3.client('dynamodb',
+                    endpoint_url='http://localhost:8000',
+                    region_name='eu-west-1',
+                    aws_access_key_id='DUMMY_ID',
+                    aws_secret_access_key='DUMMY_SECRET')
         else:
             dynamodb = boto3.client('dynamodb')
         return dynamodb
