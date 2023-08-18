@@ -16,9 +16,22 @@ class CustomException(Exception):
     pass
 
 
-def log_and_raise_error(message):
-    logger.error(message)
-    raise CustomException(message)
+# Error code to user-friendly message mapping
+ERROR_MESSAGES = {
+    "DYNAMO_DB_FAILURE": "We encountered a problem accessing our database. Please try again later.",
+    "REQUEST_BODY_FAILURE": "Failed to process your request. Please check your input and try again.",
+    "RESPONSE_CREATION_FAILURE": "Failed to process your request. Please try again later."
+}
+
+
+def log_and_raise_error(message, error_code=None):
+    if error_code and error_code in ERROR_MESSAGES:
+        user_message = ERROR_MESSAGES[error_code]
+    else:
+        user_message = "An unexpected error occurred. Please try again later."
+
+    logger.error(f"{message} - Error code: {error_code}")
+    raise CustomException(user_message)
 
 
 def get_dynamo_client():
@@ -38,23 +51,23 @@ def add_item_to_table(dynamodb_client, table, item):
         response = dynamodb_client.put_item(
             TableName=table,
             Item=item)
-        print("Item added successfully:", response)
+        logger.info(f"Item added successfully: {response}")
     except ClientError as e:
-        if e.response['Error']['Code'] == 'ProvisionedThroughputExceededException':
-            print("Error: Provisioned throughput exceeded.")
-            # todo handle failures better
-        elif e.response['Error']['Code'] == 'ConditionalCheckFailedException':
-            print("Error: Conditional check failed.")
-        elif e.response['Error']['Code'] == 'InternalServerError':
-            print("Error: Internal server error.")
+        error_code = e.response['Error']['Code']
+        logger.error(f"ClientError: {error_code} - {e}")
+        if error_code == 'ProvisionedThroughputExceededException':
+            log_and_raise_error("Provisioned throughput exceeded.", "DYNAMO_DB_FAILURE")
+        elif error_code == 'ConditionalCheckFailedException':
+            log_and_raise_error("Conditional check failed.", "DYNAMO_DB_FAILURE")
+        elif error_code == 'InternalServerError':
+            log_and_raise_error("Internal server error.", "DYNAMO_DB_FAILURE")
         else:
-            print("Error:", e)
+            log_and_raise_error(str(e))
 
 
 def get_dynamodb_resource():
     # Check if the function is running locally (offline)
     is_offline = os.environ.get('IS_OFFLINE')
-    print(is_offline)
     # Set up the DynamoDB resource based on the environment
     if is_offline:
         dynamodb_resource = boto3.resource(
@@ -65,7 +78,7 @@ def get_dynamodb_resource():
     else:
         dynamodb_resource = boto3.resource('dynamodb')
 
-    print(str(dynamodb_resource))
+    logger.info(str(dynamodb_resource))
     return dynamodb_resource
 
 
@@ -91,7 +104,7 @@ def get_data_from_body(event):
         else:
             return event
     except Exception as e:
-        log_and_raise_error(f"Failed to get data from body: {e}")
+        log_and_raise_error(f"Failed to get data from body: {e}", "REQUEST_BODY_FAILURE")
 
 
 def create_response(message, status_code):
@@ -109,4 +122,4 @@ def create_response(message, status_code):
         }
         return response
     except Exception as e:
-        log_and_raise_error(f"Failed to create response: {e}")
+        log_and_raise_error(f"Failed to create response: {e}", "RESPONSE_CREATION_FAILURE")

@@ -2,21 +2,24 @@ import json
 import bcrypt
 import secrets
 from datetime import datetime, timedelta
+import logging
 
-from aws_utils import get_data_from_body, get_dynamo_client, create_response, add_item_to_table
+from aws_utils import get_data_from_body, get_dynamo_client, create_response, log_and_raise_error, add_item_to_table
+
+# Initialize the logger
+logger = logging.getLogger(__name__)
 
 
 def login(event, context):
-    # print(event)
     data = get_data_from_body(event)
 
-    print("Data" + str(data))
+    logger.info(f"Data: {data}")
 
     username = data.get('username')
     password = data.get('password')
 
     if not username or not password:
-        return create_response("Username and password are required.", 400)
+        log_and_raise_error("Username and password are required.", "LOGIN_VALIDATION_FAILURE")
 
     user_table = "JD_User"
     dynamodb_client = get_dynamo_client()
@@ -29,22 +32,21 @@ def login(event, context):
     )
 
     if 'Item' not in response:
-        return create_response("Invalid username or password.", 401)
+        log_and_raise_error("Invalid username or password.", "INVALID_CREDENTIALS")
 
     db_user = response['Item']
-    print(f"db_user {db_user}")
+    logger.info(f"db_user {db_user}")
     stored_password_hash = db_user['Password']['S']
 
     # Validate password
     # if not bcrypt.checkpw(password.encode('utf-8'), stored_password_hash.encode('utf-8')):
     if stored_password_hash != password:
-        return create_response("Invalid username or password.", 401)
+        log_and_raise_error("Invalid username or password.", "INVALID_CREDENTIALS")
 
-    # Generate session ID (you can use any secure random string generator)
-    # In a production setting, consider using UUID or other secure session ID generators.
+    # Generate session ID
     session_id = generate_session_id()
 
-    # Save session ID to the JD_Sessions table with an expiration time (e.g., 15 minutes)
+    # Save session ID to the JD_Sessions table with an expiration time
     session_table = "JD_Sessions"
     dynamodb_client = get_dynamo_client()
     dynamodb_client.get_waiter('table_exists').wait(TableName=session_table)
@@ -56,7 +58,7 @@ def login(event, context):
                           'expiration': {'S': get_expiration_time()}})
 
     # Return the session ID to the client
-    print(f"Logged in")
+    logger.info(f"User {username} logged in with session ID: {session_id}")
     return {
         "statusCode": 200,
         "body": json.dumps({

@@ -1,14 +1,16 @@
-from aws_utils import get_data_from_body, get_dynamo_client, create_response, add_item_to_table
+import logging
+from aws_utils import get_data_from_body, get_dynamo_client, create_response, log_and_raise_error, add_item_to_table
 
+# Initialize the logger
+logger = logging.getLogger(__name__)
 
 table_name = 'JD_User'
-
 
 def signup(event, context):
     try:
         data = get_data_from_body(event)
 
-        print("Data" + str(data))
+        logger.info(f"Data: {data}")
 
         # Validate input
         name = data.get('name')
@@ -16,20 +18,19 @@ def signup(event, context):
         password = data.get('password')
 
         if not name or not email or not password:
-            return create_response("Name, email, and password are required.", 400)
+            log_and_raise_error("Name, email, and password are required.", "SIGNUP_VALIDATION_FAILURE")
 
         dynamodb = get_dynamo_client()
         dynamodb.get_waiter('table_exists').wait(TableName=table_name)
 
         # Check if user already exists
-        # Perform the get_item operation using the client
         response = dynamodb.get_item(
             TableName=table_name,
             Key={'UserId': {'S': email}}
         )
 
         if 'Item' in response:
-            return create_response("User with this email already exists.", 409)
+            log_and_raise_error("User with this email already exists.", "USER_ALREADY_EXISTS")
 
         # Hash the password
         #    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -39,18 +40,11 @@ def signup(event, context):
             'UserId': {'S': email},
             'Email': {'S': email},
             'Name': {'S': name},
-            'Password': {'S': password}
+            'Password': {'S': password}  # Ideally, you should hash the password before storing
         })
 
-        # Return response
-        response = create_response("User created successfully.", 200)
-
-        return response
+        return create_response("User created successfully.", 200)
 
     except Exception as e:
-        print("Error" + str(e))
-        # Handle any exceptions and return an error response
-        response = create_response(f"An error occurred during sign up.{e}", 500)
-        return response
-
-
+        logger.error(f"Error during signup: {e}")
+        log_and_raise_error(f"An error occurred during sign up: {e}", "SIGNUP_ERROR")
